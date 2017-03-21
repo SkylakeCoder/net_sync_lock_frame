@@ -1,8 +1,32 @@
+<html>
 <script src="/socket.io/socket.io.js"></script>
+<body>
 <script>
+    var LockFrameClient = {
+        _fps: 30,
+        _keyFrame: 5,
+
+        Init: function(data) {
+            this._fps = data.fps;
+            this._keyFrame = data.keyFrame;
+
+            alert("fps: " + this._fps + ", keyFrame: " + this._keyFrame);
+        },
+    };
+
     var socket = io.connect('http://localhost');
-    socket.on('res', function(data) {
+    socket.on('connected', function(data) {
         console.log(data);
-        socket.emit('req', { data: 'from client.' });
+        setTimeout(function() {
+            socket.emit('ready', {});
+        }, 3000);
+    });
+    socket.on("disconnect", function(data) {
+        alert("disconnected...");
+    });
+    socket.on("start", function(data) {
+        LockFrameClient.Init(data);
     });
 </script>
+</body>
+</html>
